@@ -1,5 +1,14 @@
+import sys
+import os
+import inspect
+
+import pdb
+pdb.set_trace()
+
 from pyramid.config import Configurator
+from pyramid import __package__
 from pyramid.response import Response
+
 
 def hello_world(request):
     return Response(
