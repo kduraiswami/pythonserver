@@ -1,29 +1,21 @@
-
-import sys
-sys.path.insert(0, "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/")
-
+import pdb
 import importlib.util
 
+ConfigSpec = importlib.util.spec_from_file_location("pyramid.config", "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/pyramid/config/__init__.py")
+Config = importlib.util.module_from_spec(ConfigSpec)
+ConfigSpec.loader.exec_module(Config)
 
-spec = importlib.util.spec_from_file_location("/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/pyramid/pyramid.py")
-mod = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(mod)
-
-import pdb
-pdb.set_trace()
-
-import mod.pyramid
-
-from pyramid.config import Configurator
-from pyramid.response import Response
+ResponseSpec = importlib.util.spec_from_file_location("pyramid.response", "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages/pyramid/response.py")
+Response = importlib.util.module_from_spec(ResponseSpec)
+ResponseSpec.loader.exec_module(Response)
 
 def hello_world(request):
-    return Response(
+    return ResponseSpec.Response(
         'Hello Pyramid!\n',
         content_type='text/plain',
     )
 
-config = Configurator()
-config.add_route('hello', '/hello')
-config.add_view(hello_world, route_name='hello')
-app = config.make_wsgi_app()
+Configurator = Config.Configurator()
+Configurator.add_route('hello', '/hello')
+Configurator.add_view(hello_world, route_name='hello')
+app = Configurator.make_wsgi_app()
